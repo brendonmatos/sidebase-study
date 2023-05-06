@@ -13,6 +13,29 @@ export const appRouter = router({
         greeting: `hello ${input?.text ?? 'world'}`,
         time: new Date()
       }
+    }),
+  createPost: publicProcedure
+    .input(
+      z.object({
+        content: z.string()
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const createdPost = await ctx.prisma.post.create({
+        data: {
+          content: input.content
+        }
+      })
+
+      return createdPost
+    }),
+  getPosts: publicProcedure
+    .query(async ({ ctx }) => {
+      const posts = await ctx.prisma.post.findMany()
+
+      return {
+        items: posts
+      }
     })
 })
 
